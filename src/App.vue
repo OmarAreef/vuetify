@@ -1,15 +1,20 @@
 <template>
-  <v-app >
+  <v-app>
     <v-main>
-      <router-view/>
+      <router-view />
     </v-main>
   </v-app>
 </template>
 
-<script>
+<style scoped>
+.v-application {
+  background-color: #232768ef !important
+}
 
+</style>
+<script>
 export default {
-  name: 'App',
+  name: "App",
 
   data: () => ({
     //

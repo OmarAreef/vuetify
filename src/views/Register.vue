@@ -3,22 +3,19 @@
     <v-row align="center" justify="center" class="mt-10">
       <img src="../assets/blnk.png" alt="" />
     </v-row>
-    <v-row align="center" justify="center" class="mt-10">
-      <v-col cols="6">
-        <v-alert
-          v-if="alert"
-          color="red"
-          v-model="alert"
-          dismissible
-          elevation="8"
-          shaped
-          type="error"
-          >username or password is incorrect please try again or Register a new
-          account</v-alert
-        >
-      </v-col>
+    <v-row align="center" justify="center" class="mt-5">
+      <v-alert
+        v-if="alert"
+        color="red"
+        v-model="alert"
+        dismissible
+        elevation="8"
+        shaped
+        type="error"
+        >username is already in use, please try again with a different username</v-alert
+      >
     </v-row>
-    <v-row align="center" justify="center" class="text-center mt-10">
+    <v-row align="center" justify="center" class="text-center mt-5">
       <v-col cols="6">
         <v-card
           elevation="10"
@@ -37,7 +34,7 @@
           <v-card-title>
             <v-row>
               <v-col cols="6" offset="3">
-                <h2 class="display-1 text-center">Login</h2>
+                <h2 class="text-h2 text-center">Register</h2>
               </v-col>
             </v-row>
           </v-card-title>
@@ -59,7 +56,7 @@
                 <v-text-field
                   type="password"
                   v-model="password"
-                  label="password"
+                  label="Password"
                   :rules="nameRules"
                   filled
                   rounded
@@ -68,26 +65,28 @@
               </v-col>
             </v-row>
             <v-row justify="center">
-              <v-col cols="4">
+              <v-col cols="9">
+                <v-select
+                  v-model="role"
+                  label="Role"
+                  :items="items"
+                  :rules="nameRules"
+                  filled
+                  rounded
+                  dense
+                ></v-select>
+              </v-col>
+            </v-row>
+            <v-row justify="center">
+              <v-col cols="6">
                 <v-btn
                   elevation="6"
                   outlined
                   rounded
                   text
                   color="success"
-                  @click="login"
-                >
-                  login
-                </v-btn>
-              </v-col>
-              <v-col cols="4">
-                <v-btn
-                  elevation="6"
-                  outlined
-                  rounded
-                  text
-                  color="secondary"
-                  @click="register"
+                  x-large
+                  @click="Register"
                 >
                   Register
                 </v-btn>
@@ -99,19 +98,24 @@
     </v-row>
   </v-container>
 </template>
-
-<style scoped></style>
+<style scoped>
+.col-9 {
+  max-height: 70px !important;
+}
+</style>
 
 <script>
 import axios from "axios";
 import router from "../router";
 
 export default {
-  name: "Home",
+  name: "Register",
   data: () => ({
     valid: false,
+    items: ["customer", "provider"],
     username: "",
     password: "",
+    role: "",
     nameRules: [
       (v) => !!v || "field is required",
       (v) => (v && v.length >= 3) || "field must be greater than 3 characters",
@@ -120,32 +124,29 @@ export default {
     alert: false,
   }),
   methods: {
-    login() {
+    Register() {
       if (this.$refs.form.validate()) {
         this.loading = true;
         let data = {
           username: this.username,
           password: this.password,
+          role: this.role,
         };
         axios
-          .post("http://127.0.0.1:8000/app/login/", data)
+          .post("http://127.0.0.1:8000/app/register/", data)
           .then((response) => {
             let myCookie = document.cookie + "; jwt=" + response.data["token"];
-            sessionStorage.setItem("Token", response.data["token"]);
-            sessionStorage.setItem("Role", response.data["role"]);
+            document.cookie = myCookie;
             router.push("dashboard");
           })
           .catch((error) => {
-            console.log(error);
+            console.log(error.response.data.message);
             setTimeout(() => {
               this.loading = false;
               this.alert = true;
             }, 250);
           });
       }
-    },
-    register() {
-      router.push("register");
     },
   },
 };
