@@ -23,9 +23,10 @@
         <v-card
           elevation="10"
           outlined
-          class="pa-3 rounded-lg"
+          class="pa-3 rounded-lg mt-n10"
           justify="center"
           :loading="loading"
+          
         >
           <template slot="progress">
             <v-progress-linear

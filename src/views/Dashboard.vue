@@ -38,12 +38,19 @@
           : "Funds"
       }}
     </h1>
-    <loan-item
-      v-for="(item, index) in loans"
-      :key="index"
-      :loan="item"
-      @refresh="refresh"
-    />
+    <v-row justify="center">
+      <v-col v-if="role === 'bank'" cols="2">
+        <report-comp ref="reportComp"></report-comp>
+      </v-col>
+      <v-col cols="10">
+        <loan-item
+          v-for="(item, index) in loans"
+          :key="index"
+          :loan="item"
+          @refresh="refresh"
+        />
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
@@ -52,9 +59,10 @@ import axios from "axios";
 import LoanItem from "../components/LoanItem.vue";
 import ApplicationForm from "../components/ApplicationForm.vue";
 import FundsForm from "../components/FundsForm.vue";
+import ReportComp from "../components/ReportComp.vue";
 export default {
   name: "Dashboard",
-  components: { LoanItem, ApplicationForm, FundsForm },
+  components: { LoanItem, ApplicationForm, FundsForm, ReportComp },
   data: () => ({
     loans: [],
     funds: [],
@@ -90,6 +98,7 @@ export default {
       this.overlay1 = false;
     },
     refresh() {
+      this.$refs.reportComp.getReport();
       axios
         .get("http://127.0.0.1:8000/app/loan/", {
           headers: {

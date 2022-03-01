@@ -137,7 +137,7 @@ export default {
           .then((response) => {
             let myCookie = document.cookie + "; jwt=" + response.data["token"];
             document.cookie = myCookie;
-            router.push("dashboard");
+            router.push("/");
           })
           .catch((error) => {
             console.log(error.response.data.message);
